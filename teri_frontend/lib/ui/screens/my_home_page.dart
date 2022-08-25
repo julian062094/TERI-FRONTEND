@@ -24,7 +24,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool _loading = false;
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? userName = "aaa";
+  String? password = "";
+  String? _errorMessage = "";
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +65,13 @@ class _MyHomePageState extends State<MyHomePage> {
                               decoration: const InputDecoration(labelText: "ID (Persona o empresa)"),
                               keyboardType: TextInputType.phone,
                               onSaved: (value){
-                                String? userName = value;
+                                userName = value;
                               },
                               validator: (value){
-                                if(value.isEmpty){
+                                if(value!.isEmpty){
                                   return "Este campo es obligatorio";
+                                }else{
+
                                 }
                               },
                             ),
@@ -74,6 +79,16 @@ class _MyHomePageState extends State<MyHomePage> {
                             TextFormField(
                               obscureText: true,
                               decoration: const InputDecoration(labelText: "Contraseña"),
+                              onSaved: (value){
+                                password = value;
+                              },
+                              validator: (value){
+                                if(value!.isEmpty){
+                                  return "Este campo es obligatorio";
+                                }else{
+
+                                }
+                              },
                             ),
                             const SizedBox(height: 40),
                             ElevatedButton(
@@ -102,6 +117,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ],
                                 )
                             ),
+                            if(_errorMessage!.isNotEmpty)
+                              Text(
+                                _errorMessage!,
+                                  style: const TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                  ),
+                                textAlign: TextAlign.center,
+                              ),
                             const SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -133,17 +157,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _login(BuildContext context) async{
 
-    setState(() { _loading = true; });
-    Map tokenMap = await ServerControllerAPI().login("julianvargas","Promocion2011..");
-    String? token = tokenMap["key"];
-    if ( token != null ) {
-      setState(() { _loading = false; });
-      final route = MaterialPageRoute(builder: (BuildContext context){
-        return const LoggedPage(title: "Hola Julixx");
-      });
-      Navigator.of(context).push(route);
-    }else {
-      setState(() { _loading = false; });
+    if(_formKey.currentState!.validate()){
+        _formKey.currentState!.save();
+
+        setState(() { _loading = true; });
+        Map tokenMap = await ServerControllerAPI().login(userName!,password!);
+        String? token = tokenMap["key"];
+        if ( token != null ) {
+          setState(() { _loading = false; });
+          _errorMessage = "";
+          final route = MaterialPageRoute(builder: (BuildContext context){
+            return const LoggedPage(title: "Hola Julixx");
+          });
+          Navigator.of(context).push(route);
+        }else {
+          setState(() {
+            _loading = false;
+            _errorMessage = "Datos incorrectos";
+          });
+
+        }
+
     }
   }
 }
