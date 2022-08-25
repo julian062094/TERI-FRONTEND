@@ -13,7 +13,7 @@ class LoggedPage extends StatelessWidget {
         backgroundColor: Colors.blue[800]!,
       )
       ),
-      body: Center(
+      body: const Center(
         child:  Text("Información del usuario"),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -36,7 +36,7 @@ class LoggedPage extends StatelessWidget {
         onTap: null,
       ),
       backgroundColor: Colors.blueGrey[100]!,
-      drawer: Drawer(
+      drawer: const Drawer(
 
       ),
     );
