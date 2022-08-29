@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:teri_frontend/ui/screens/logged_page.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../../resources/server_controller.dart';
-import '../../models/user.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -25,7 +22,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String? userName = "aaa";
+  String? userName = "";
   String? password = "";
   String? _errorMessage = "";
 
@@ -156,10 +153,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _login(BuildContext context) async{
-
     if(_formKey.currentState!.validate()){
         _formKey.currentState!.save();
-
         setState(() { _loading = true; });
         Map tokenMap = await ServerControllerAPI().login(userName!,password!);
         String? token = tokenMap["key"];

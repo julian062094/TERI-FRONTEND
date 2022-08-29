@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.teri_frontend">
-   <application
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application
         android:label="teri_frontend"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
