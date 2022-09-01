@@ -162,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() { _loading = false; });
           _errorMessage = "";
           final route = MaterialPageRoute(builder: (BuildContext context){
-            return const LoggedPage(title: "Hola Julixx");
+            return const LoggedPage();
           });
           Navigator.of(context).push(route);
         }else {

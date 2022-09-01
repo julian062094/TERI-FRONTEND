@@ -1,39 +1,92 @@
 import 'package:flutter/material.dart';
+import '../../resources/server_controller.dart';
 
-class LoggedPage extends StatelessWidget {
-  const LoggedPage({Key? key, required this.title}) : super(key: key);
+class LoggedPage extends StatefulWidget {
+  const LoggedPage({Key? key}) : super(key: key);
 
-  final String title;
+
+  @override
+  State<LoggedPage> createState() => _LoggedPageState();
+}
+
+class _LoggedPageState extends State<LoggedPage> {
+  List projects = [];
+  int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    Future response2 = getProjects();
+  }
+
+  Future getProjects() async {
+    List response = await ServerControllerAPI().projects();
+    setState((){
+      projects = response;
+    });
+    return response;
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return
+      Scaffold(
       appBar: (AppBar(
-        title: Text(title),
+        title: const Text("Luis Carlos Sabogal"),
         backgroundColor: Colors.blue[800]!,
       )
       ),
-      body: const Center(
-        child:  Text("Información del usuario"),
-      ),
+      body: _selectedIndex==0? RefreshIndicator(
+        onRefresh: getProjects,
+        child: ListView.builder(
+          itemCount: projects.length,
+          itemBuilder: (context, index){
+            return Card(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ListTile(
+                    leading: const Icon(Icons.album),
+                    title: Text(projects[index]["name"]),
+                    subtitle: Text(projects[index]["website"]),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      const SizedBox(width: 8),
+                      TextButton(
+                        child: const Text('VER MÁS'),
+                        onPressed: () {/* ... */},
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          } ,
+
+        ),
+      ):Text("Holi"),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Proyectos',
+            label: 'Tus Proyectos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Perfil',
           ),
         ],
-        //currentIndex: null,
+        currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue[800]!,
-        onTap: null,
+        onTap: _onItemTapped,
       ),
       backgroundColor: Colors.blueGrey[100]!,
       drawer: const Drawer(
@@ -41,5 +94,6 @@ class LoggedPage extends StatelessWidget {
       ),
     );
   }
+
 }
 

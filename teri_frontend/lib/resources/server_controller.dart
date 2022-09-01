@@ -6,17 +6,16 @@ import '../models/user.dart';
 
 class ServerControllerAPI {
 
-  var url = "https://teri-erp.herokuapp.com/login/";
+  var urlLogin = "https://teri-erp.herokuapp.com/login/";
+  var urlNegocios = "https://teri-erp.herokuapp.com/api/negocios";
 
   Future login(String userName, String password) async {
-    print("holo");
-    var response = await http.post(Uri.parse(url), body:
+    var response = await http.post(Uri.parse(urlLogin), body:
         {
           "username" : userName,
           "password" : password
         }
     );
-    print("hole");
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
       return json;
@@ -25,4 +24,15 @@ class ServerControllerAPI {
       return jsonDecode(json);
     }
   }
+
+  Future projects() async {
+    var response = await http.get(Uri.parse(urlNegocios));
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+      return json["negocios"];
+    } else{
+      print("Error");
+    }
+  }
+
 }
